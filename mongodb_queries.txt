@@ -1,0 +1,81 @@
+MongoDB Queries - Expense Tracker
+
+Database:
+use expense_tracker
+
+Collection:
+expenses
+
+1. Display all expenses
+db.expenses.find()
+
+2. Display Food expenses
+db.expenses.find({category: "Food"})
+
+3. Find expenses greater than 500
+db.expenses.find({amount: {$gt: 500}})
+
+4. Find expenses less than 500
+db.expenses.find({amount: {$lt: 500}})
+
+5. Find expenses between 300 and 1000
+db.expenses.find({amount: {$gte: 300, $lte: 1000}})
+
+6. Sort expenses from highest to lowest
+db.expenses.find().sort({amount: -1})
+
+7. Sort expenses from lowest to highest
+db.expenses.find().sort({amount: 1})
+
+8. Count total expenses
+db.expenses.countDocuments()
+
+9. Display unique categories
+db.expenses.distinct("category")
+
+10. Display only category and amount
+db.expenses.find({}, {category: 1, amount: 1})
+
+11. Display Food expenses with amount and description
+db.expenses.find({category: "Food"}, {amount: 1, description: 1})
+
+12. Find expenses after 24 September 2026
+db.expenses.find({date: {$gt: ISODate("2026-09-24")}})
+
+13. Find expenses on 27 September 2026
+db.expenses.find({
+    date: {
+        $gte: ISODate("2026-09-27"),
+        $lt: ISODate("2026-09-28")
+    }
+})
+
+14. Find Food or Travel expenses
+db.expenses.find({$or: [{category: "Food"}, {category: "Travel"}]})
+
+15. Find Shopping expenses above 1000
+db.expenses.find({category: "Shopping", amount: {$gt: 1000}})
+
+16. Calculate total spending
+db.expenses.aggregate([
+    {$group: {_id: null, total: {$sum: "$amount"}}}
+])
+
+17. Calculate spending by category
+db.expenses.aggregate([
+    {$group: {_id: "$category", total: {$sum: "$amount"}}}
+])
+
+18. Calculate average expense
+db.expenses.aggregate([
+    {$group: {_id: null, average: {$avg: "$amount"}}}
+])
+
+19. Update an expense
+db.expenses.updateOne(
+    {description: "Breakfast"},
+    {$set: {amount: 200}}
+)
+
+20. Delete an expense
+db.expenses.deleteOne({description: "Medicine"})
