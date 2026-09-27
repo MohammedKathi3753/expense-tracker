@@ -1,6 +1,8 @@
 <?php
 require 'db.php';
-$expenses = $expenses->find([], ['sort' => ['date' => -1]]);
+$category = $_GET['category'] ?? '';
+$query = $category ? ['category' => $category] : [];
+$expenses = $expenses->find($query, ['sort' => ['date' => -1]]);
 $total = $db->expenses->aggregate([['$group' => ['_id' => null, 'total' => ['$sum' => '$amount']]]])->toArray();
 $total = $total[0]['total'] ?? 0;
 ?>
@@ -42,6 +44,20 @@ $total = $total[0]['total'] ?? 0;
 </div>
 <div class="card">
 <h2>Recent Activity</h2>
+<form method="GET" class="filter">
+<select name="category">
+<option value="">All Types</option>
+<option value="Food" <?= $category === 'Food' ? 'selected' : '' ?>>Food</option>
+<option value="Travel" <?= $category === 'Travel' ? 'selected' : '' ?>>Travel</option>
+<option value="Shopping" <?= $category === 'Shopping' ? 'selected' : '' ?>>Shopping</option>
+<option value="Bills" <?= $category === 'Bills' ? 'selected' : '' ?>>Bills</option>
+<option value="Entertainment" <?= $category === 'Entertainment' ? 'selected' : '' ?>>Entertainment</option>
+<option value="Health" <?= $category === 'Health' ? 'selected' : '' ?>>Health</option>
+<option value="Education" <?= $category === 'Education' ? 'selected' : '' ?>>Education</option>
+<option value="Other" <?= $category === 'Other' ? 'selected' : '' ?>>Other</option>
+</select>
+<button type="submit">Filter</button>
+</form>
 <table>
 <tr><th>Date</th><th>Type</th><th>Memo</th><th>Spent</th><th>Action</th></tr>
 <?php foreach ($expenses as $expense): ?>
